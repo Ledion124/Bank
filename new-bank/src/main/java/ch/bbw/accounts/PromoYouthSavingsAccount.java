@@ -44,6 +44,18 @@ public class PromoYouthSavingsAccount extends SavingsAccount
 	}
 
 	/**
+	 * Gibt den Kontotyp zurück. Muss überschrieben werden, sonst käme
+	 * "Sparkonto" aus {@link SavingsAccount}.
+	 *
+	 * @return "Promo-Jugendsparkonto"
+	 */
+	@Override
+	public String getAccountType()
+	{
+		return "Promo-Jugendsparkonto";
+	}
+
+	/**
 	 * Hebt den gegebenen Betrag vom Konto ab, sofern danach noch
 	 * mindestens {@link #MIN_BALANCE} auf dem Konto bleibt.
 	 *

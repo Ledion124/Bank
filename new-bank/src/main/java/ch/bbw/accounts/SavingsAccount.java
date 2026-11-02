@@ -24,6 +24,17 @@ public class SavingsAccount extends Account
 	}
 
 	/**
+	 * Gibt den Kontotyp zurück.
+	 *
+	 * @return "Sparkonto"
+	 */
+	@Override
+	public String getAccountType()
+	{
+		return "Sparkonto";
+	}
+
+	/**
 	 * Hebt den gegebenen Betrag vom Konto ab.
 	 *
 	 * @param date das Transaktionsdatum
