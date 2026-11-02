@@ -47,8 +47,15 @@ public class PromoYouthSavingsAccount extends SavingsAccount
 	 * Hebt den gegebenen Betrag vom Konto ab, sofern danach noch
 	 * mindestens {@link #MIN_BALANCE} auf dem Konto bleibt.
 	 *
+	 * <p>
+	 * Überschrieben wird die Variante mit Buchungstext, weil sie die eigentliche
+	 * Abhebung ausführt. {@link Account#withdraw(Scheduled, long)} ruft sie mit dem
+	 * Standardtext auf, so gilt der Mindestsaldo für beide Varianten.
+	 * </p>
+	 *
 	 * @param date das Transaktionsdatum
 	 * @param amount der abzuhebende Betrag
+	 * @param text der Buchungstext
 	 *
 	 * @return der neue Saldo
 	 * @throws InvalidAmountException falls der Mindestsaldo unterschritten würde
@@ -56,10 +63,10 @@ public class PromoYouthSavingsAccount extends SavingsAccount
 	 * @throws InvalidDateException falls das Datum in der Vergangenheit liegt
 	 */
 	@Override
-	public long withdraw(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
+	public long withdraw(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException {
 		if (getBalance() - amount < MIN_BALANCE)
 			throw new InvalidAmountException("Balance must not fall below minimum balance of " + MIN_BALANCE);
 
-		return super.withdraw(date, amount);
+		return super.withdraw(date, amount, text);
 	}
 }
