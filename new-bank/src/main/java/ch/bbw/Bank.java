@@ -125,6 +125,22 @@ public class Bank {
     }
 
     /**
+     * Zahlt den gegebenen Betrag mit einem Buchungstext auf das Konto
+     * mit der gegebenen Kontonummer ein.
+     *
+     * @param id     die Kontonummer
+     * @param date   das Transaktionsdatum
+     * @param amount der einzuzahlende Betrag
+     * @param text   der Buchungstext
+     */
+    public void deposit(String id, Scheduled date, long amount, String text)
+            throws InvalidAmountException, InvalidDateException {
+        var account = getAccount(id);
+
+        account.deposit(date, amount, text);
+    }
+
+    /**
      * Hebt den gegebenen Betrag vom Konto mit
      * der gegebenen Kontonummer ab.
      *
@@ -145,6 +161,24 @@ public class Bank {
 
         return account.withdraw(date, amount);
     }
+
+    /**
+     * Hebt den gegebenen Betrag mit einem Buchungstext vom Konto
+     * mit der gegebenen Kontonummer ab.
+     *
+     * @param id     die Kontonummer
+     * @param date   das Transaktionsdatum
+     * @param amount der abzuhebende Betrag
+     * @param text   der Buchungstext
+     * @return der neue Saldo des Kontos
+     */
+    public long withdraw(String id, Scheduled date, long amount, String text)
+            throws InvalidAmountException, InvalidDateException {
+        var account = getAccount(id);
+
+        return account.withdraw(date, amount, text);
+    }
+
     public List<Account> top5HighestBalances() {
         return accounts.values()
                 .stream()
@@ -176,4 +210,5 @@ public class Bank {
 
         return account.get();
     }
+
 }

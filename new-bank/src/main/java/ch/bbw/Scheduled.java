@@ -15,13 +15,19 @@ public class Scheduled {
      * The milliseconds until the date is due. Negative values mean that the date is past due.
      */
     private long millisecondsUntilDue;
+
+    /**
+     * Creates a date relative to now.
+     *
+     * @param millisecondsUntilDue milliseconds until the date; negative means in the past
+     */
     public Scheduled(long millisecondsUntilDue) {
         this.millisecondsUntilDue = millisecondsUntilDue;
     }
 
     /**
-     * Checks if the transaction date is not in the past.
-     * @return true if the transaction date is not in the past.
+     * Checks if the transaction date is in the past.
+     * @return true if the date is in the past (past due), false if it is now or in the future
      */
     public boolean isPastDue() {
         return millisecondsUntilDue < 0;
@@ -57,6 +63,7 @@ public class Scheduled {
      * @param duration the duration to add
      * @param unit the unit of the duration
      * @return the Scheduled date
+     * @throws UnsupportedTemporalTypeException if the unit is not supported (e.g. DECADES)
      */
     public Scheduled plus(long duration, ChronoUnit unit){
             return switch (unit) {
@@ -72,41 +79,97 @@ public class Scheduled {
             };
     }
 
+    /**
+     * Moves the date later by the given number of milliseconds.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param millisToAdd number of milliseconds
+     * @return this date
+     */
     public Scheduled plusMillis(long millisToAdd){
         millisecondsUntilDue += millisToAdd;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of seconds.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param secondsToAdd number of seconds
+     * @return this date
+     */
     public Scheduled plusSeconds(long secondsToAdd){
         millisecondsUntilDue += secondsToAdd * 1000;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of minutes.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param minutesToAdd number of minutes
+     * @return this date
+     */
     public Scheduled plusMinutes(long minutesToAdd){
         millisecondsUntilDue += minutesToAdd * 1000 * 60;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of hours.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param hoursToAdd number of hours
+     * @return this date
+     */
     public Scheduled plusHours(long hoursToAdd){
         millisecondsUntilDue += hoursToAdd * 1000 * 60 * 60;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of days.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param daysToAdd number of days
+     * @return this date
+     */
     public Scheduled plusDays(long daysToAdd){
         millisecondsUntilDue += daysToAdd * 1000 * 60 * 60 * 24;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of weeks.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param weeksToAdd number of weeks
+     * @return this date
+     */
     public Scheduled plusWeeks(long weeksToAdd){
         millisecondsUntilDue += weeksToAdd * 1000 * 60 * 60 * 24 * 7;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of months (30 days each).
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param monthsToAdd number of months (30 days each)
+     * @return this date
+     */
     public Scheduled plusMonths(long monthsToAdd){
         millisecondsUntilDue += monthsToAdd * 1000 * 60 * 60 * 24 * 30;
         return this;
     }
 
+    /**
+     * Moves the date later by the given number of years (365 days each).
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param yearsToAdd number of years (365 days each)
+     * @return this date
+     */
     public Scheduled plusYears(long yearsToAdd){
         millisecondsUntilDue += yearsToAdd * 1000 * 60 * 60 * 24 * 365;
         return this;
@@ -117,6 +180,7 @@ public class Scheduled {
      * @param duration the duration to subtract
      * @param unit the unit of the duration
      * @return the Scheduled date
+     * @throws UnsupportedTemporalTypeException if the unit is not supported (e.g. DECADES)
      */
     public Scheduled minus(long duration, ChronoUnit unit){
         return switch (unit) {
@@ -132,41 +196,97 @@ public class Scheduled {
         };
     }
 
+    /**
+     * Moves the date earlier by the given number of milliseconds.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param millisToAdd number of milliseconds
+     * @return this date
+     */
     public Scheduled minusMillis(long millisToAdd){
         millisecondsUntilDue -= millisToAdd;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of seconds.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param secondsToAdd number of seconds
+     * @return this date
+     */
     public Scheduled minusSeconds(long secondsToAdd){
         millisecondsUntilDue -= secondsToAdd * 1000;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of minutes.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param minutesToAdd number of minutes
+     * @return this date
+     */
     public Scheduled minusMinutes(long minutesToAdd){
         millisecondsUntilDue -= minutesToAdd * 1000 * 60;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of hours.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param hoursToAdd number of hours
+     * @return this date
+     */
     public Scheduled minusHours(long hoursToAdd){
         millisecondsUntilDue -= hoursToAdd * 1000 * 60 * 60;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of days.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param daysToAdd number of days
+     * @return this date
+     */
     public Scheduled minusDays(long daysToAdd){
         millisecondsUntilDue -= daysToAdd * 1000 * 60 * 60 * 24;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of weeks.
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param weeksToAdd number of weeks
+     * @return this date
+     */
     public Scheduled minusWeeks(long weeksToAdd){
         millisecondsUntilDue -= weeksToAdd * 1000 * 60 * 60 * 24 * 7;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of months (30 days each).
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param monthsToAdd number of months (30 days each)
+     * @return this date
+     */
     public Scheduled minusMonths(long monthsToAdd){
         millisecondsUntilDue -= monthsToAdd * 1000 * 60 * 60 * 24 * 30;
         return this;
     }
 
+    /**
+     * Moves the date earlier by the given number of years (365 days each).
+     * Changes this object and returns it, so calls can be chained.
+     *
+     * @param yearsToAdd number of years (365 days each)
+     * @return this date
+     */
     public Scheduled minusYears(long yearsToAdd){
         millisecondsUntilDue -= yearsToAdd * 1000 * 60 * 60 * 24 * 365;
         return this;

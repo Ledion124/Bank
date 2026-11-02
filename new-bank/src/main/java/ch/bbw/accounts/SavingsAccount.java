@@ -28,17 +28,16 @@ public class SavingsAccount extends Account
 	 *
 	 * @param date das Transaktionsdatum
 	 * @param amount der abzuhebende Betrag
+	 * @param text der Buchungstext
 	 *
-	 * @return boolean <code>true</code>, falls die
-	 * Abhebung erfolgreich war, andernfalls (z.B.
-	 * bei negativem Betrag, oder nicht gen�gend
-	 * Saldo) <code>false</code>.
+	 * @return der neue Saldo des Kontos
+	 * @throws InvalidAmountException wenn der Betrag grösser als der Saldo ist (kein Überziehen)
 	 */
 	@Override
-	public long withdraw(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
+	public long withdraw(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException {
 		if (getBalance() < amount)
 			throw new InvalidAmountException("Amount is greater than balance");
 
-		return super.withdraw(date, amount);
+		return super.withdraw(date, amount, text);
 	}
 }
