@@ -8,6 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.Map;
+import java.util.TreeMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,16 +82,46 @@ public class AccountTests {
         assertEquals(sum, account.getBalance());
     }
 
+    /**
+     * Testet, dass eine TreeMap Referenzen auf die Konten speichert (keine Kopien),
+     * so wie die Bank ihre Konten verwaltet.
+     */
     @Test
     @DisplayName("TreeMap of two Account-References should work")
-    public void testReferences() {
-        fail("ToDo");
+    public void testReferences() throws InvalidDateException, InvalidAmountException {
+        Account first = new SavingsAccount("S-1000");
+        Account second = new SavingsAccount("S-1001");
+
+        Map<String, Account> accounts = new TreeMap<>();
+        accounts.put(first.getId(), first);
+        accounts.put(second.getId(), second);
+
+        // die Map liefert genau dieselben Objekte zurück
+        assertSame(first, accounts.get("S-1000"));
+        assertSame(second, accounts.get("S-1001"));
+
+        // eine Einzahlung über die Map ändert das Originalkonto
+        accounts.get("S-1000").deposit(Scheduled.now(), 500, "Lohn");
+        assertEquals(500, first.getBalance());
+        assertEquals(0, second.getBalance());
     }
 
+    /**
+     * Testet die Datumsprüfung: Buchungen mit einem Datum in der Vergangenheit
+     * werden abgelehnt und hinterlassen keine Buchung.
+     */
     @Test
-    @DisplayName("TreeMap of two Account-References should work")
+    @DisplayName("Transactions dated in the past are rejected")
     public void testCanTransact() {
-        fail("ToDo");
+        Account account = new SavingsAccount("1234");
+
+        assertFalse(account.isInvalidTransaction(Scheduled.now()));
+        assertTrue(account.isInvalidTransaction(Scheduled.now().minusDays(1)));
+
+        assertThrows(InvalidDateException.class,
+                () -> account.deposit(Scheduled.now().minusDays(1), 1000, "Lohn"));
+        assertEquals(0, account.getBookings().size());
+        assertEquals(0, account.getBalance());
     }
 
     /**
