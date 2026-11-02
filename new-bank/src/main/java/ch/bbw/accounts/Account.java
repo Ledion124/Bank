@@ -5,6 +5,9 @@ import ch.bbw.Scheduled;
 import ch.bbw.exceptions.InvalidAmountException;
 import ch.bbw.exceptions.InvalidDateException;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,5 +136,71 @@ public abstract class Account {
         bookings.add(new Booking(date.toUnix(), -amount, text));
 
         return getBalance();
+    }
+
+    /**
+     * Erstellt einen Kontoauszug: eine Zeile pro Buchung
+     * (Datum, Betrag, Text) und am Ende den Saldo.
+     *
+     * @return der Kontoauszug als Text
+     */
+    public String printStatement() {
+        StringBuilder sb = new StringBuilder();
+
+        for (Booking booking : bookings) {
+            sb.append(Instant.ofEpochMilli(booking.date()));
+            sb.append("  ");
+            sb.append(formatAmount(booking.amount()));
+            sb.append("  ");
+            sb.append(booking.text());
+            sb.append("\n");
+        }
+
+        sb.append("Saldo: ");
+        sb.append(formatAmount(getBalance()));
+
+        return sb.toString();
+    }
+
+    /**
+     * Erstellt einen Kontoauszug für einen Monat: eine Zeile pro Buchung
+     * aus diesem Monat (Datum, Betrag, Text) und am Ende den Saldo.
+     *
+     * @param year  das Jahr, z.B. 2026
+     * @param month der Monat, 1 = Januar … 12 = Dezember
+     * @return der Kontoauszug des Monats als Text
+     */
+    public String printStatement(int year, int month) {
+        StringBuilder sb = new StringBuilder();
+
+        for (Booking booking : bookings) {
+            LocalDate day = Instant.ofEpochMilli(booking.date()).atZone(ZoneId.systemDefault()).toLocalDate();
+
+            if (day.getYear() == year && day.getMonthValue() == month) {
+                sb.append(Instant.ofEpochMilli(booking.date()));
+                sb.append("  ");
+                sb.append(formatAmount(booking.amount()));
+                sb.append("  ");
+                sb.append(booking.text());
+                sb.append("\n");
+            }
+        }
+
+        sb.append("Saldo: ");
+        sb.append(formatAmount(getBalance()));
+
+        return sb.toString();
+    }
+
+    /**
+     * Wandelt einen Betrag in Millirappen in einen lesbaren CHF-Text um.
+     *
+     * @param millirappen der Betrag in Millirappen
+     * @return der Betrag als Text, z.B. "CHF 1.23456"
+     */
+    private String formatAmount(long millirappen) {
+        double chf = millirappen / 100_000.0;
+        String wert = String.format("CHF %.5f", chf);
+        return wert;
     }
 }
