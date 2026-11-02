@@ -161,4 +161,28 @@ public class PromoYouthSavingsAccountTests
 		assertEquals(HUNDRED_CHF, account.getBalance());
 		assertEquals(bookingsBefore, account.getBookings());
 	}
+
+	/**
+	 * Je ein Konto pro Typ in einer {@code List<Account>}: Die Summe der Salden
+	 * stimmt, ein überzogenes Lohnkonto senkt die Summe.
+	 */
+	@Test
+	@DisplayName("Sum of balances over a List<Account> with one account per type should be correct")
+	public void testPolymorphicSumOfBalances() throws InvalidAmountException, InvalidDateException
+	{
+		Account savings = new SavingsAccount("S-1000");
+		savings.deposit(Scheduled.now(), HUNDRED_CHF);
+
+		Account salary = new SalaryAccount("P-1000", -50_000_000);
+		salary.withdraw(Scheduled.now(), 5_000_000);
+
+		List<Account> accounts = List.of(savings, account, salary);
+
+		long sum = 0;
+		for (Account a : accounts)
+			sum += a.getBalance();
+
+		assertEquals(-5_000_000, salary.getBalance());
+		assertEquals(HUNDRED_CHF + HUNDRED_CHF - 5_000_000, sum);
+	}
 }
