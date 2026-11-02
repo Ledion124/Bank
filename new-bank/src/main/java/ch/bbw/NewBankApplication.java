@@ -26,6 +26,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class NewBankApplication {
 
+	/**
+	 * Startet die Spring-Boot-Anwendung.
+	 *
+	 * @param args Kommandozeilen-Argumente, werden an Spring weitergegeben
+	 */
 	public static void main(String[] args) {
 		SpringApplication.run(NewBankApplication.class, args);
 	}
