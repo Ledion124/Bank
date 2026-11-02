@@ -44,4 +44,40 @@ public class BookingTests {
 			assertTrue(booking.toString().contains(booking.text()));
 		}
 	}
+
+	/**
+	 * Ein leerer oder fehlender Text wird durch den Standardtext ersetzt.
+	 */
+	@Test
+	@DisplayName("Null or blank text becomes the default text \"Buchung\"")
+	public void testDefaultText() {
+		assertEquals("Buchung", new Booking(1_700_000_000_000L, 500_000, null).text());
+		assertEquals("Buchung", new Booking(1_700_000_000_000L, 500_000, "").text());
+		assertEquals("Buchung", new Booking(1_700_000_000_000L, 500_000, "   ").text());
+	}
+
+	/**
+	 * Eine Auszahlung wird als Buchung mit negativem Betrag gespeichert.
+	 */
+	@Test
+	@DisplayName("A booking can hold a negative amount (withdrawal)")
+	public void testNegativeAmount() {
+		Booking booking = new Booking(1_700_000_000_000L, -120_000, "Miete");
+
+		assertEquals(-120_000, booking.amount());
+	}
+
+	/**
+	 * Zwei Buchungen mit denselben Werten sind gleich (record-Gleichheit).
+	 */
+	@Test
+	@DisplayName("Bookings with the same values are equal")
+	public void testEquality() {
+		Booking a = new Booking(1_700_000_000_000L, 500_000, "Lohn");
+		Booking b = new Booking(1_700_000_000_000L, 500_000, "Lohn");
+		Booking c = new Booking(1_700_000_000_000L, 500_000, "Miete");
+
+		assertEquals(a, b);
+		assertNotEquals(a, c);
+	}
 }
