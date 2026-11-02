@@ -68,13 +68,25 @@ public abstract class Account {
     }
 
     /**
-     * Deposits the given amount to the account.
+     * Deposits the given amount with the default text "Einzahlung".
      *
      * @param date   the transaction date
      * @param amount the amount to deposit
      * @return the new balance of the account
      */
     public long deposit(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
+        return deposit(date, amount, "Einzahlung");
+    }
+
+    /**
+     * Deposits the given amount to the account.
+     *
+     * @param date   the transaction date
+     * @param amount the amount to deposit
+     * @param text   the booking text
+     * @return the new balance of the account
+     */
+    public long deposit(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException {
         if (amount <= 0)
             throw new InvalidAmountException("amount must be greater than 0");
 
@@ -82,9 +94,20 @@ public abstract class Account {
             throw new InvalidDateException("date mustn't be in the past");
 
         balance += amount;
-        bookings.add(new Booking(date.toUnix(), amount));
+        bookings.add(new Booking(date.toUnix(), amount, text));
 
         return balance;
+    }
+
+    /**
+     * Withdraws the given amount with the default text "Auszahlung".
+     *
+     * @param date   the transaction date
+     * @param amount the amount to withdraw
+     * @return the new balance of the account
+     */
+    public long withdraw(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
+        return withdraw(date, amount, "Auszahlung");
     }
 
     /**
@@ -92,11 +115,10 @@ public abstract class Account {
      *
      * @param date   das Transaktionsdatum
      * @param amount der abzuhebende Betrag
-     * @return boolean <code>true</code>, falls die
-     * Abhebung erfolgreich war, andernfalls (z.B.
-     * bei negativem Betrag) <code>false</code>.
+     * @param text   der Buchungstext
+     * @return der neue Saldo des Kontos
      */
-    public long withdraw(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
+    public long withdraw(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException {
         if (amount <= 0)
             throw new InvalidAmountException("amount must be greater than 0");
 
@@ -105,7 +127,7 @@ public abstract class Account {
 
         balance -= amount;
         // Achtung: hier Buchung mit negativem Betrag!
-        bookings.add(new Booking(date.toUnix(), -amount));
+        bookings.add(new Booking(date.toUnix(), -amount, text));
 
         return balance;
     }
