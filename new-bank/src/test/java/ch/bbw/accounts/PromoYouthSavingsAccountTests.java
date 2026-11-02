@@ -1,11 +1,14 @@
 package ch.bbw.accounts;
 
+import ch.bbw.Booking;
 import ch.bbw.Scheduled;
 import ch.bbw.exceptions.InvalidAmountException;
 import ch.bbw.exceptions.InvalidDateException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,6 +29,9 @@ public class PromoYouthSavingsAccountTests
 
 	private PromoYouthSavingsAccount account;
 
+	/**
+	 * Erstellt vor jedem Test ein Konto mit CHF 100.00 Saldo.
+	 */
 	@BeforeEach
 	public void setUp() throws InvalidAmountException, InvalidDateException
 	{
@@ -33,6 +39,9 @@ public class PromoYouthSavingsAccountTests
 		account.deposit(Scheduled.now(), HUNDRED_CHF);
 	}
 
+	/**
+	 * Der Konstruktor setzt die Kontonummer, die Einzahlung erhöht den Saldo.
+	 */
 	@Test
 	@DisplayName("Constructs a PromoYouthSavingsAccount and tests a simple deposit")
 	public void testInitAndDeposit()
@@ -41,6 +50,9 @@ public class PromoYouthSavingsAccountTests
 		assertEquals(HUNDRED_CHF, account.getBalance());
 	}
 
+	/**
+	 * Abheben bis genau zum Mindestsaldo funktioniert.
+	 */
 	@Test
 	@DisplayName("Withdrawing down to exactly the minimum balance should work")
 	public void testWithdrawDownToMinBalance() throws InvalidAmountException, InvalidDateException
@@ -53,6 +65,9 @@ public class PromoYouthSavingsAccountTests
 		assertEquals(PromoYouthSavingsAccount.MIN_BALANCE, account.getBalance());
 	}
 
+	/**
+	 * Ein Millirappen unter den Mindestsaldo wird abgelehnt.
+	 */
 	@Test
 	@DisplayName("Withdrawing one Millirappen below the minimum balance should throw")
 	public void testWithdrawBelowMinBalance()
@@ -62,6 +77,9 @@ public class PromoYouthSavingsAccountTests
 		assertThrows(InvalidAmountException.class, () -> account.withdraw(Scheduled.now(), amount));
 	}
 
+	/**
+	 * Eine abgelehnte Abhebung verändert den Saldo nicht.
+	 */
 	@Test
 	@DisplayName("A rejected withdrawal should leave the balance untouched")
 	public void testRejectedWithdrawLeavesBalance()
@@ -71,6 +89,9 @@ public class PromoYouthSavingsAccountTests
 		assertEquals(HUNDRED_CHF, account.getBalance());
 	}
 
+	/**
+	 * Von einem Konto, das genau den Mindestsaldo hat, kann nichts abgehoben werden.
+	 */
 	@Test
 	@DisplayName("Withdrawing from an account below the minimum balance should throw")
 	public void testWithdrawFromSmallAccount() throws InvalidAmountException, InvalidDateException
@@ -82,6 +103,9 @@ public class PromoYouthSavingsAccountTests
 		assertEquals(PromoYouthSavingsAccount.MIN_BALANCE, small.getBalance());
 	}
 
+	/**
+	 * Die geerbte Prüfung lehnt einen Betrag von 0 oder kleiner ab.
+	 */
 	@Test
 	@DisplayName("Inherited validation: a non-positive amount should still throw")
 	public void testWithdrawInvalidAmount()
@@ -90,6 +114,9 @@ public class PromoYouthSavingsAccountTests
 		assertThrows(InvalidAmountException.class, () -> account.withdraw(Scheduled.now(), -1));
 	}
 
+	/**
+	 * Das Konto kann als SavingsAccount und als Account verwendet werden.
+	 */
 	@Test
 	@DisplayName("A PromoYouthSavingsAccount is usable as a SavingsAccount and an Account")
 	public void testIsSavingsAccount()
@@ -99,5 +126,39 @@ public class PromoYouthSavingsAccountTests
 
 		assertEquals(HUNDRED_CHF, savings.getBalance());
 		assertEquals(HUNDRED_CHF, plain.getBalance());
+	}
+
+	/**
+	 * Abheben mit Buchungstext bis genau zum Mindestsaldo funktioniert,
+	 * der Text landet in der Buchung.
+	 */
+	@Test
+	@DisplayName("Withdraw with text down to exactly the minimum balance should work")
+	public void testWithdrawWithTextDownToMinBalance() throws InvalidAmountException, InvalidDateException
+	{
+		long amount = HUNDRED_CHF - PromoYouthSavingsAccount.MIN_BALANCE;
+
+		long newBalance = account.withdraw(Scheduled.now(), amount, "Kino");
+
+		assertEquals(PromoYouthSavingsAccount.MIN_BALANCE, newBalance);
+		assertEquals(2, account.getBookings().size());
+		assertEquals("Kino", account.getBookings().get(1).text());
+	}
+
+	/**
+	 * Auch beim Abheben mit Buchungstext gilt der Mindestsaldo:
+	 * Saldo und Buchungen bleiben unverändert.
+	 */
+	@Test
+	@DisplayName("Withdraw with text below the minimum balance should throw and leave the account unchanged")
+	public void testWithdrawWithTextBelowMinBalance()
+	{
+		long amount = HUNDRED_CHF - PromoYouthSavingsAccount.MIN_BALANCE + 1;
+		List<Booking> bookingsBefore = account.getBookings();
+
+		assertThrows(InvalidAmountException.class, () -> account.withdraw(Scheduled.now(), amount, "Kino"));
+
+		assertEquals(HUNDRED_CHF, account.getBalance());
+		assertEquals(bookingsBefore, account.getBookings());
 	}
 }
