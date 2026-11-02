@@ -24,18 +24,12 @@ public abstract class Account {
      */
     private final List<Booking> bookings;
     /**
-     * Kontostand in Millirappen.
-     */
-    private long balance;
-
-    /**
      * Erzeugt ein neues Konto.
      *
      * @param id die Kontonummer
      */
     public Account(String id) {
         this.id = id;
-        this.balance = 0;
         this.bookings = new ArrayList<Booking>();
     }
 
@@ -54,7 +48,18 @@ public abstract class Account {
      * @return Saldo
      */
     public long getBalance() {
-        return balance;
+        return bookings.stream()
+                .mapToLong(Booking::amount)
+                .sum();
+    }
+
+    /**
+     * Gibt alle Buchungen des Kontos zurück.
+     *
+     * @return eine unveränderbare Kopie der Buchungsliste
+     */
+    public List<Booking> getBookings() {
+        return List.copyOf(bookings);
     }
 
     /**
@@ -93,10 +98,9 @@ public abstract class Account {
         if (isInvalidTransaction(date))
             throw new InvalidDateException("date mustn't be in the past");
 
-        balance += amount;
         bookings.add(new Booking(date.toUnix(), amount, text));
 
-        return balance;
+        return getBalance();
     }
 
     /**
@@ -125,10 +129,9 @@ public abstract class Account {
         if (isInvalidTransaction(date))
             throw new InvalidDateException("date mustn't be in the past");
 
-        balance -= amount;
         // Achtung: hier Buchung mit negativem Betrag!
         bookings.add(new Booking(date.toUnix(), -amount, text));
 
-        return balance;
+        return getBalance();
     }
 }
