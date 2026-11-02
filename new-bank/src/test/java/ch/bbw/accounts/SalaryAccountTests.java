@@ -127,6 +127,39 @@ public class SalaryAccountTests
 	}
 
 	/**
+	 * Abheben mit Buchungstext bis genau zur Kreditlimite funktioniert,
+	 * der Text landet in der Buchung.
+	 */
+	@Test
+	@DisplayName("Withdraw with text down to exactly the creditLimit should work")
+	public void testWithdrawWithTextToCreditLimit() throws Exception
+	{
+		SalaryAccount account = new SalaryAccount("P-1000", CREDIT_LIMIT);
+
+		long balance = account.withdraw(Scheduled.now(), 50_000_000, "Miete");
+
+		assertEquals(CREDIT_LIMIT, balance);
+		assertEquals(1, account.getBookings().size());
+		assertEquals("Miete", account.getBookings().get(0).text());
+	}
+
+	/**
+	 * Auch beim Abheben mit Buchungstext gilt die Kreditlimite.
+	 */
+	@Test
+	@DisplayName("Withdraw with text beyond the creditLimit should throw")
+	public void testWithdrawWithTextBeyondCreditLimit()
+	{
+		SalaryAccount account = new SalaryAccount("P-1000", CREDIT_LIMIT);
+
+		assertThrows(InvalidAmountException.class,
+				() -> account.withdraw(Scheduled.now(), 50_000_001, "Miete"));
+
+		assertEquals(0, account.getBalance());
+		assertTrue(account.getBookings().isEmpty());
+	}
+
+	/**
 	 * Eine positive Kreditlimite ist unsinnig und wird abgelehnt.
 	 */
 	@Test
