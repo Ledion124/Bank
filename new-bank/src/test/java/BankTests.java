@@ -1,6 +1,9 @@
+import ch.bbw.Bank;
+import ch.bbw.Scheduled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 
@@ -11,6 +14,18 @@ import static org.junit.jupiter.api.Assertions.fail;
  * @version 1.0
  */
 public class BankTests {
+    /**
+     * Testet die Initialisierung einer Bank.
+     */
+    @Test
+    @DisplayName("Test the initialization of a new bank")
+    public void testInit() {
+        Bank bank;
+        bank = new Bank();
+
+        assertEquals(0, bank.getBalance());
+    }
+
     @Test
     @DisplayName("Constructor Test, creates two SavingsAccounts")
     public void testCreate() {
@@ -19,7 +34,7 @@ public class BankTests {
 
     @Test
     @DisplayName("Simple deposit on Bank-SavingsAccount should work")
-    public void testDeposit() {
+    public void testSimpleDeposit() {
         fail("ToDo");
     }
 
@@ -73,5 +88,4 @@ public class BankTests {
     public void testBottom5() {
         fail("ToDo");
     }
-
 }
