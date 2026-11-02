@@ -74,19 +74,26 @@ public class SalaryAccount extends Account
 	 * Grenzfall: Abheben bis <i>genau</i> zur Kreditlimite ist erlaubt.
 	 * </p>
 	 *
+	 * <p>
+	 * Überschrieben wird die Variante mit Buchungstext, weil sie die eigentliche
+	 * Abhebung ausführt. {@link Account#withdraw(Scheduled, long)} ruft sie mit dem
+	 * Standardtext auf, so gilt die Kreditlimite für beide Varianten.
+	 * </p>
+	 *
 	 * @param date   das Transaktionsdatum
 	 * @param amount der abzuhebende Betrag in Millirappen
+	 * @param text   der Buchungstext
 	 * @return der neue Saldo
 	 * @throws InvalidAmountException falls die Kreditlimite unterschritten würde
 	 *                                oder der Betrag nicht grösser als 0 ist
 	 * @throws InvalidDateException   falls das Datum in der Vergangenheit liegt
 	 */
 	@Override
-	public long withdraw(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException
+	public long withdraw(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException
 	{
 		if (getBalance() - amount < creditLimit)
 			throw new InvalidAmountException("Withdrawal would exceed credit limit of " + creditLimit);
 
-		return super.withdraw(date, amount);
+		return super.withdraw(date, amount, text);
 	}
 }
