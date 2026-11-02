@@ -185,4 +185,17 @@ public class PromoYouthSavingsAccountTests
 		assertEquals(-5_000_000, salary.getBalance());
 		assertEquals(HUNDRED_CHF + HUNDRED_CHF - 5_000_000, sum);
 	}
+
+	/**
+	 * Ein Promo-Jugendsparkonto gibt als Kontotyp "Promo-Jugendsparkonto" zurück,
+	 * auch über eine {@code Account}-Referenz (nicht "Sparkonto" der Superklasse).
+	 */
+	@Test
+	@DisplayName("getAccountType of a PromoYouthSavingsAccount should be Promo-Jugendsparkonto")
+	public void testGetAccountType()
+	{
+		Account plain = account;
+
+		assertEquals("Promo-Jugendsparkonto", plain.getAccountType());
+	}
 }

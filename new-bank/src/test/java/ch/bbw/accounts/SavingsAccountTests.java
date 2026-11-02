@@ -117,4 +117,16 @@ public class SavingsAccountTests
 
 		assertEquals(10_000_000, account.getBalance());
 	}
+
+	/**
+	 * Ein Sparkonto gibt als Kontotyp "Sparkonto" zurück.
+	 */
+	@Test
+	@DisplayName("getAccountType of a SavingsAccount should be Sparkonto")
+	public void testGetAccountType()
+	{
+		Account account = new SavingsAccount("S-1000");
+
+		assertEquals("Sparkonto", account.getAccountType());
+	}
 }
