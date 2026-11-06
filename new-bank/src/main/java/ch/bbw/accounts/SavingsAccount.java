@@ -8,8 +8,14 @@ import ch.bbw.exceptions.InvalidDateException;
 /**
  * Sparkonto.
  *
- * @author Luigi Cavuoti, lro@gmx.ch
- * @version 1.1
+ * <p>
+ * Eigene Regel: <b>kein Überziehen</b>. Eine Abhebung, die grösser als der
+ * aktuelle Saldo ist, wird mit einer
+ * {@link ch.bbw.exceptions.InvalidAmountException} abgelehnt.
+ * </p>
+ *
+ * @author Luigi Cavuoti, lro@gmx.ch, Ledion Sakaj
+ * @version 1.2
  */
 public class SavingsAccount extends Account
 {

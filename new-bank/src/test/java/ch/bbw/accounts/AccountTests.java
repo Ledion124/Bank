@@ -4,6 +4,7 @@ package ch.bbw.accounts;
 import ch.bbw.Scheduled;
 import ch.bbw.exceptions.InvalidAmountException;
 import ch.bbw.exceptions.InvalidDateException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,15 +18,21 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests für die Klasse Account.
  *
- * @author luigicavuoti
- * @version 2.0
+ * @author luigicavuoti, Ledion Sakaj
+ * @version 3.0
  */
 public class AccountTests {
+    /**
+     * Ein frisches Sparkonto für jeden Test.
+     */
     private Account account;
 
+    /**
+     * Erstellt vor jedem Test ein neues, leeres Sparkonto.
+     */
+    @BeforeEach
     public void setUp() {
         account = new SavingsAccount("1234567890");
-
     }
 
     /**

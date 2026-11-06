@@ -7,6 +7,9 @@ package ch.bbw.exceptions;
  * Beispiele: ein Betrag kleiner oder gleich 0 bei einer Ein- oder Auszahlung,
  * oder eine Abhebung, die ein Sparkonto überziehen würde.
  * </p>
+ *
+ * @author Luigi Cavuoti, Ledion Sakaj
+ * @version 1.1
  */
 public class InvalidAmountException extends Exception {
     /**

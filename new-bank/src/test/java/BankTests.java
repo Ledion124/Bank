@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests für die Klasse 'Bank'.
  *
- * @author luigicavuoti
- * @version 1.0
+ * @author luigicavuoti, Ledion Sakaj
+ * @version 2.0
  */
 public class BankTests {
     /**
