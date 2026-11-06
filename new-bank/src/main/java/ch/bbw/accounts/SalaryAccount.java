@@ -67,6 +67,17 @@ public class SalaryAccount extends Account
 	}
 
 	/**
+	 * Gibt den Kontotyp zurück.
+	 *
+	 * @return "Lohnkonto"
+	 */
+	@Override
+	public String getAccountType()
+	{
+		return "Lohnkonto";
+	}
+
+	/**
 	 * Hebt den gegebenen Betrag vom Konto ab, sofern der Saldo danach
 	 * nicht unter die Kreditlimite fällt.
 	 *

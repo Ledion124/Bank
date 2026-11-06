@@ -169,4 +169,16 @@ public class SalaryAccountTests
 		assertThrows(IllegalArgumentException.class,
 				() -> new SalaryAccount("P-1000", 100_000));
 	}
+
+	/**
+	 * Ein Lohnkonto gibt als Kontotyp "Lohnkonto" zurück.
+	 */
+	@Test
+	@DisplayName("getAccountType of a SalaryAccount should be Lohnkonto")
+	public void testGetAccountType()
+	{
+		Account account = new SalaryAccount("P-1000", CREDIT_LIMIT);
+
+		assertEquals("Lohnkonto", account.getAccountType());
+	}
 }
