@@ -46,6 +46,14 @@ public abstract class Account {
     }
 
     /**
+     * Gibt die Bezeichnung des Kontotyps zurück, z.B. "Sparkonto".
+     * Jede Unterklasse muss diese Methode selbst beantworten.
+     *
+     * @return der Kontotyp
+     */
+    public abstract String getAccountType();
+
+    /**
      * Gibt das Saldo zur�ck.
      *
      * @return Saldo
