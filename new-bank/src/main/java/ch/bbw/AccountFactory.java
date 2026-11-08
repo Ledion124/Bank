@@ -2,14 +2,16 @@ package ch.bbw;
 
 import ch.bbw.accounts.*;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class AccountFactory {
     /**
      * Next account id.
      */
-    private long nextAccountId;
+    private final AtomicLong nextAccountId;
 
     public AccountFactory() {
-        this.nextAccountId = 1000;
+        this.nextAccountId = new AtomicLong(1000);
     }
 
     public Account createPromoYouthSavingsAccount() {
@@ -47,6 +49,6 @@ public class AccountFactory {
     }
 
     private String nextId(AccountType type) {
-        return type.getPrefix() + "-" + nextAccountId++;
+        return type.getPrefix() + "-" + nextAccountId.getAndIncrement();
     }
 }
