@@ -3,11 +3,18 @@ import ch.bbw.Scheduled;
 import ch.bbw.accounts.Account;
 import ch.bbw.exceptions.InvalidAmountException;
 import ch.bbw.exceptions.InvalidDateException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -15,10 +22,98 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests für die Klasse 'Bank'.
  *
- * @author luigicavuoti, Ledion Sakaj
- * @version 2.0
+ * <p>
+ * Seit Sprint 5 ist {@link Bank} ein Singleton: Alle Tests teilen sich dieselbe
+ * Instanz. Damit die Tests trotzdem unabhängig voneinander und von ihrer
+ * Reihenfolge sind, leert {@link #setUp()} die Bank vor jedem Test mit
+ * {@link Bank#reset()}. Das ist ein Workaround, siehe JavaDoc von {@code reset()}.
+ * </p>
+ *
+ * @author luigicavuoti, Ledion Sakaj, Silvan Castelberg
+ * @version 3.0
  */
 public class BankTests {
+    /**
+     * Leert die gemeinsame Bank-Instanz vor jedem Test (Workaround für den Singleton).
+     */
+    @BeforeEach
+    public void setUp() {
+        Bank.reset();
+    }
+
+    /**
+     * getInstance() liefert bei jedem Aufruf dieselbe Instanz.
+     */
+    @Test
+    @DisplayName("getInstance returns always the same instance")
+    public void testSingletonIdentity() {
+        assertSame(Bank.getInstance(), Bank.getInstance());
+    }
+
+    /**
+     * Die Bank hat keinen öffentlichen Konstruktor, {@code new Bank()} ist von aussen nicht möglich.
+     */
+    @Test
+    @DisplayName("Bank has no public constructor")
+    public void testNoPublicConstructor() {
+        assertThrows(NoSuchMethodException.class, () -> Bank.class.getConstructor());
+        assertEquals(0, Bank.class.getConstructors().length);
+    }
+
+    /**
+     * Viele Threads rufen gleichzeitig getInstance() auf und bekommen alle dieselbe Instanz.
+     */
+    @Test
+    @DisplayName("getInstance is thread-safe: concurrent calls return the same instance")
+    public void testConcurrentGetInstance() throws InterruptedException {
+        int threads = 50;
+        Set<Bank> instances = ConcurrentHashMap.newKeySet();
+        CountDownLatch start = new CountDownLatch(1);
+        ExecutorService pool = Executors.newFixedThreadPool(threads);
+
+        for (int i = 0; i < threads; i++) {
+            pool.submit(() -> {
+                start.await();
+                instances.add(Bank.getInstance());
+                return null;
+            });
+        }
+        start.countDown();
+        pool.shutdown();
+
+        assertTrue(pool.awaitTermination(5, TimeUnit.SECONDS));
+        assertEquals(1, instances.size());
+        assertSame(Bank.getInstance(), instances.iterator().next());
+    }
+
+    /**
+     * Isolation, Teil 1: Dieser Test verändert die gemeinsame Bank.
+     * Zusammen mit {@link #testIsolationEmptyBank()} muss er in jeder Reihenfolge grün sein.
+     */
+    @Test
+    @DisplayName("Isolation part 1: a test that changes the shared bank")
+    public void testIsolationChangesBank() throws InvalidAmountException, InvalidDateException {
+        Bank bank = Bank.getInstance();
+        String id = bank.createSavingsAccount();
+
+        bank.deposit(id, Scheduled.now(), 1000);
+
+        assertEquals(1000, bank.getBalance());
+    }
+
+    /**
+     * Isolation, Teil 2: Die Bank ist zu Beginn jedes Tests leer,
+     * auch wenn {@link #testIsolationChangesBank()} vorher gelaufen ist.
+     */
+    @Test
+    @DisplayName("Isolation part 2: the shared bank is empty at the start of every test")
+    public void testIsolationEmptyBank() {
+        Bank bank = Bank.getInstance();
+
+        assertEquals(0, bank.getBalance());
+        assertTrue(bank.top5HighestBalances().isEmpty());
+    }
+
     /**
      * Testet die Initialisierung einer Bank.
      */
@@ -26,7 +121,7 @@ public class BankTests {
     @DisplayName("Test the initialization of a new bank")
     public void testInit() {
         Bank bank;
-        bank = new Bank();
+        bank = Bank.getInstance();
 
         assertEquals(0, bank.getBalance());
         assertTrue(bank.top5HighestBalances().isEmpty());
@@ -39,7 +134,7 @@ public class BankTests {
     @Test
     @DisplayName("Constructor Test, creates two SavingsAccounts")
     public void testCreate() throws InvalidAmountException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
 
         String first = bank.createSavingsAccount();
         String second = bank.createSavingsAccount();
@@ -58,7 +153,7 @@ public class BankTests {
     @Test
     @DisplayName("Simple deposit on Bank-SavingsAccount should work")
     public void testSimpleDeposit() throws InvalidAmountException, InvalidDateException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
         String id = bank.createSavingsAccount();
 
         bank.deposit(id, Scheduled.now(), 1000, "Lohn");
@@ -83,7 +178,7 @@ public class BankTests {
     @Test
     @DisplayName("Simple withdraw on Bank-SavingsAccount should work")
     public void testWithdraw() throws InvalidAmountException, InvalidDateException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
         String id = bank.createSavingsAccount();
         bank.deposit(id, Scheduled.now(), 1000);
 
@@ -108,7 +203,7 @@ public class BankTests {
     @Test
     @DisplayName("Not a real Test, it prints the Balance of the account")
     public void testPrint() throws InvalidAmountException, InvalidDateException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
         String id = bank.createSavingsAccount();
         bank.deposit(id, Scheduled.now(), 1_250_000, "Lohn");
         bank.withdraw(id, Scheduled.now(), 300_000, "Miete");
@@ -127,7 +222,7 @@ public class BankTests {
     @Test
     @DisplayName("Not a real Test, it prints the Balance of the account")
     public void testMonthlyPrint() throws InvalidAmountException, InvalidDateException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
         String id = bank.createSavingsAccount();
         bank.deposit(id, Scheduled.now(), 1_250_000, "Lohn");
 
@@ -145,7 +240,7 @@ public class BankTests {
     @Test
     @DisplayName("Tests the balance of two SalaryAccounts from the Bank")
     public void testBalance() throws InvalidAmountException, InvalidDateException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
         String first = bank.createSalaryAccount(-1000);
         String second = bank.createSalaryAccount(-1000);
 
@@ -193,7 +288,7 @@ public class BankTests {
      * @return die Bank mit den Konten
      */
     private Bank createBankWithBalances(long... balances) throws InvalidAmountException, InvalidDateException {
-        Bank bank = new Bank();
+        Bank bank = Bank.getInstance();
         for (long balance : balances) {
             String id = bank.createSavingsAccount();
             bank.deposit(id, Scheduled.now(), balance);

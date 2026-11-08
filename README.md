@@ -108,4 +108,5 @@ statt `./mvnw`):
 
 - Use Cases: [`docs/use-cases/`](docs/use-cases/)
 - Klassendiagramm: [`docs/Klassendiagramm.md`](docs/Klassendiagramm.md)
+- Sprint-Dokumentation (was, wer, welcher PR): [`docs/Sprints.md`](docs/Sprints.md)
 - Ursprüngliches README der Vorlage (Lehrer): [`new-bank/README-Vorlage.md`](new-bank/README-Vorlage.md)
