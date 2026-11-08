@@ -21,13 +21,74 @@ public class Bank {
      * Liste aller Konti.
      */
     private final TreeMap<String, Account> accounts;
-    private final AccountFactory accountFactory;
     /**
-     * Initialisiert eine neue Bank.
+     * Erstellt die Konten, wird über den Konstruktor hineingegeben.
      */
-    public Bank() {
+    private final AccountFactory accountFactory;
+
+    /**
+     * Hält die einzige Instanz (Initialization-on-demand Holder).
+     * Die JVM lädt diese Klasse erst beim ersten Aufruf von {@link #getInstance()}
+     * und garantiert, dass {@code INSTANCE} genau einmal und thread-sicher erstellt wird.
+     */
+    private static class Holder {
+        /**
+         * Die einzige Bank der Anwendung.
+         */
+        static final Bank INSTANCE = new Bank(new AccountFactory());
+    }
+
+    /**
+     * Initialisiert eine neue Bank mit der gegebenen Factory.
+     *
+     * <p>
+     * Paketintern statt öffentlich: Die Anwendung holt die Bank über
+     * {@link #getInstance()}, Tests im Package {@code ch.bbw} können aber
+     * eine eigene, unabhängige Bank mit einer bekannten Factory bauen.
+     * </p>
+     *
+     * @param accountFactory die Factory, die die Konten erstellt
+     * @throws IllegalArgumentException falls {@code accountFactory} {@code null} ist
+     */
+    Bank(AccountFactory accountFactory) {
+        if (accountFactory == null)
+            throw new IllegalArgumentException("accountFactory must not be null");
+
         this.accounts = new TreeMap<String, Account>();
-        accountFactory = new AccountFactory();
+        this.accountFactory = accountFactory;
+    }
+
+    /**
+     * Gibt die einzige Bank-Instanz der Anwendung zurück.
+     *
+     * @return die Bank, bei jedem Aufruf dieselbe Instanz
+     */
+    public static Bank getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    /**
+     * Entfernt alle Konten aus der Bank-Instanz. <b>Nur für Tests.</b>
+     *
+     * <p>
+     * <b>Workaround, kein sauberes Design:</b> Seit {@code Bank} ein Singleton ist,
+     * teilen sich alle Tests dieselbe Instanz. Ohne {@code reset()} hängt das
+     * Ergebnis eines Tests davon ab, welche Tests vorher gelaufen sind. Eine
+     * öffentliche Methode, die nur existiert, damit Tests einen Designentscheid
+     * rückgängig machen können, ist ein <b>Code Smell</b>: Jeder Code in der
+     * Anwendung könnte damit alle Konten löschen. Die bessere Lösung ist der
+     * Konstruktor {@link #Bank(AccountFactory)}: Ein Test baut seine eigene Bank.
+     * </p>
+     *
+     * <p>
+     * JUnit führt die Tests heute nacheinander aus (keine
+     * {@code junit-platform.properties} mit Parallelausführung). Liefen die Tests
+     * parallel, würde ein {@code reset()} in einem Test die Konten eines anderen,
+     * gleichzeitig laufenden Tests löschen; dieser Workaround hilft dann nicht mehr.
+     * </p>
+     */
+    public static void reset() {
+        getInstance().accounts.clear();
     }
 
     /**
