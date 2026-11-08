@@ -91,13 +91,9 @@ public class Bank {
      * Gibt den Kontostand des Kontos mit der gegebenen
      * Kontonummer zurück.
      *
-     * <p>
-     * Falls kein Konto mit der gesuchten Kontonummer
-     * existiert, gibt diese Methode 0 (zero) zurück.
-     * </p>
-     *
      * @param id die Kontonummer
      * @return long der Kontostand des Kontos
+     * @throws InvalidAmountException falls es kein Konto mit dieser Kontonummer gibt
      */
     public long getBalance(String id) throws InvalidAmountException {
         return getAccount(id).getBalance();
@@ -105,20 +101,16 @@ public class Bank {
 
     /**
      * Zahlt den gegebenen Betrag auf das Konto mit
-     * der gegebenen Kontonummer ein.
-     *
-     * <p>
-     * Diese Methode kann <code>false</code> zur�ckgeben,
-     * falls das Konto nicht existiert, oder falls die
-     * Einzahlung auf dem Konto nicht funktioniert.
-     * </p>
+     * der gegebenen Kontonummer ein. Als Buchungstext wird "Einzahlung" verwendet.
      *
      * @param id     die Kontonummer
      * @param date   das Transaktionsdatum
      * @param amount der einzuzahlende Betrag
+     * @throws InvalidAmountException falls das Konto nicht existiert oder der Betrag nicht grösser als 0 ist
+     * @throws InvalidDateException   falls das Datum in der Vergangenheit liegt
      */
     public void deposit(String id, Scheduled date,
-                        long amount) throws InvalidAmountException, InvalidAmountException, InvalidDateException {
+                        long amount) throws InvalidAmountException, InvalidDateException {
         var account = getAccount(id);
 
         account.deposit(date, amount);
@@ -132,6 +124,8 @@ public class Bank {
      * @param date   das Transaktionsdatum
      * @param amount der einzuzahlende Betrag
      * @param text   der Buchungstext
+     * @throws InvalidAmountException falls das Konto nicht existiert oder der Betrag nicht grösser als 0 ist
+     * @throws InvalidDateException   falls das Datum in der Vergangenheit liegt
      */
     public void deposit(String id, Scheduled date, long amount, String text)
             throws InvalidAmountException, InvalidDateException {
@@ -142,21 +136,18 @@ public class Bank {
 
     /**
      * Hebt den gegebenen Betrag vom Konto mit
-     * der gegebenen Kontonummer ab.
-     *
-     * <p>
-     * Diese Methode kann <code>false</code> zur�ckgeben,
-     * falls das Konto nicht existiert, oder falls das
-     * Abheben vom Konto nicht funktioniert.
-     * </p>
+     * der gegebenen Kontonummer ab. Als Buchungstext wird "Auszahlung" verwendet.
      *
      * @param id     die Kontonummer
      * @param date   das Transaktionsdatum
      * @param amount der abzuhebende Betrag
-     * @return new balance
+     * @return der neue Saldo des Kontos
+     * @throws InvalidAmountException falls das Konto nicht existiert, der Betrag nicht grösser als 0 ist
+     *                                oder die Regel des Kontotyps verletzt wird (z.B. Überziehen)
+     * @throws InvalidDateException   falls das Datum in der Vergangenheit liegt
      */
     public long withdraw(String id, Scheduled date,
-                            long amount) throws InvalidAmountException, InvalidAmountException, InvalidDateException {
+                            long amount) throws InvalidAmountException, InvalidDateException {
         var account = getAccount(id);
 
         return account.withdraw(date, amount);
@@ -171,6 +162,9 @@ public class Bank {
      * @param amount der abzuhebende Betrag
      * @param text   der Buchungstext
      * @return der neue Saldo des Kontos
+     * @throws InvalidAmountException falls das Konto nicht existiert, der Betrag nicht grösser als 0 ist
+     *                                oder die Regel des Kontotyps verletzt wird (z.B. Überziehen)
+     * @throws InvalidDateException   falls das Datum in der Vergangenheit liegt
      */
     public long withdraw(String id, Scheduled date, long amount, String text)
             throws InvalidAmountException, InvalidDateException {
@@ -179,6 +173,12 @@ public class Bank {
         return account.withdraw(date, amount, text);
     }
 
+    /**
+     * Gibt die (höchstens) fünf Konten mit dem höchsten Saldo zurück,
+     * absteigend sortiert.
+     *
+     * @return bis zu fünf Konten, das reichste zuerst; leer, wenn die Bank keine Konten hat
+     */
     public List<Account> top5HighestBalances() {
         return accounts.values()
                 .stream()
@@ -187,6 +187,12 @@ public class Bank {
                 .toList();
     }
 
+    /**
+     * Gibt die (höchstens) fünf Konten mit dem tiefsten Saldo zurück,
+     * aufsteigend sortiert. Überzogene Lohnkonten (negativer Saldo) stehen zuerst.
+     *
+     * @return bis zu fünf Konten, das ärmste zuerst; leer, wenn die Bank keine Konten hat
+     */
     public List<Account> top5LowestBalances() {
         return accounts.values()
                 .stream()
@@ -196,9 +202,11 @@ public class Bank {
     }
 
     /**
-     * Getter of the property <tt>account</tt>
+     * Sucht das Konto mit der gegebenen Kontonummer.
      *
-     * @return Returns the account.
+     * @param id die Kontonummer
+     * @return das Konto
+     * @throws InvalidAmountException falls es kein Konto mit dieser Kontonummer gibt
      */
     public Account getAccount(String id) throws InvalidAmountException {
 

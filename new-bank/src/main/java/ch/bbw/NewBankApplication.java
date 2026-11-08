@@ -8,8 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *
  * <p>
  * Startet den eingebetteten Webserver auf <code>localhost:8080</code>:
- * <pre>./mvnw spring-boot:run</pre>
  * </p>
+ * <pre>./mvnw spring-boot:run</pre>
  *
  * <p>
  * Die Annotation {@code @SpringBootApplication} aktiviert das Component-Scanning
