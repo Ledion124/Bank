@@ -1,9 +1,9 @@
 # Klassendiagramm
 
-Stand: Sprint 4 (Factory Pattern). Das Diagramm zeigt alle Java-Klassen aus
+Stand: Sprint 5 (Singleton Pattern). Das Diagramm zeigt alle Java-Klassen aus
 `new-bank/src/main/java/ch/bbw` mit Attributen, Methoden, Vererbung und Beziehungen.
 
-Legende: `+` public, `-` private, `*` abstrakt, `$` statisch.
+Legende: `+` public, `-` private, `~` paketintern, `*` abstrakt, `$` statisch.
 Beträge sind in Millirappen (`long`), Datumswerte in Millisekunden (Unix-Zeit).
 
 ```mermaid
@@ -17,7 +17,9 @@ classDiagram
     class Bank {
         -accounts: TreeMap~String, Account~
         -accountFactory: AccountFactory
-        +Bank()
+        ~Bank(accountFactory: AccountFactory)
+        +getInstance() Bank$
+        +reset()$
         +createSavingsAccount() String
         +createPromoYouthSavingsAccount() String
         +createSalaryAccount(creditLimit: long) String
@@ -150,7 +152,7 @@ classDiagram
     %% Beziehungen
     NewBankApplication ..> Bank : startet
     Bank "1" o-- "0..*" Account : verwaltet
-    Bank "1" *-- "1" AccountFactory : nutzt
+    Bank "1" o-- "1" AccountFactory : bekommt im Konstruktor
     AccountFactory ..> Account : erstellt
     AccountFactory ..> AccountType : verwendet
     Account "1" *-- "0..*" Booking : hat
@@ -171,6 +173,11 @@ classDiagram
 - **Factory Pattern:** `Bank` erstellt nie selbst ein Konto, sondern ruft die
   `AccountFactory` auf. Nur die Factory kennt die konkreten Kontoklassen, die
   `Bank` arbeitet nur mit der abstrakten Klasse `Account`.
+- **Singleton Pattern:** Es gibt genau eine `Bank`, man holt sie mit
+  `Bank.getInstance()` (Holder-Idiom, lazy und thread-sicher). Der Konstruktor
+  ist paketintern und bekommt die `AccountFactory` hineingegeben, damit Tests
+  eine eigene Bank bauen können. `reset()` leert die Bank und existiert nur für
+  Tests (Workaround). Die Begründung steht im JavaDoc von `Bank`.
 - **AccountType:** Das Enum hält Kontotyp und Präfix der Kontonummer
   (`S`, `Y`, `P`) an einem Ort zusammen.
 - **Booking:** Ein Konto speichert seine Buchungen; der Saldo wird aus den
