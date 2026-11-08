@@ -13,8 +13,8 @@ und committet, danach der Code, der sie grün macht.
 | Person | Schwerpunkt |
 |---|---|
 | Ledion Sakaj (Ledion124) | Sprint 2 (Buchungen), Tests für Sprint 1 (`BankTests`) und Sprint 4 (`AccountFactoryTests`), README, JavaDoc |
-| Louis Engel (Louiss123) | Sprint 3 (`SalaryAccount`), Sprint 4 (Factory), Klassendiagramm |
-| Silvan Castelberg (Silvanca) | Sprint 3 (`PromoYouthSavingsAccount`, `getAccountType`), Sprint 5 (Singleton), Use Cases |
+| Louis Engel (Louiss123) | Sprint 3 (`SalaryAccount`), Sprint 4 (Factory, `AccountType`), Klassendiagramm |
+| Silvan Castelberg (Silvanca) | Sprint 3 (`PromoYouthSavingsAccount`, `getAccountType`), Sprint 5 (Singleton), Use Cases, Sprint-Dokumentation |
 
 ## Sprint-Übersicht
 
@@ -23,8 +23,8 @@ und committet, danach der Code, der sie grün macht.
 | 1 | Baseline: `Bank` + `Account` (einzahlen, abheben, Saldo) | Vorlage | ✅ Code aus der Vorlage, Tests von uns |
 | 2 | Buchungen mit Text, Saldo aus Buchungen, Kontoauszug | `02-Exercise-bookings.md` | ✅ PR #1 |
 | 3 | Kontotypen / Vererbung | `03-Exercise-specific-accounts.md` | ✅ PR #2, #3, #4 |
-| 4 | Factory Pattern | `04-Exercise-factory-pattern.md` | in Arbeit (Tests geschrieben) |
-| 5 | Singleton Pattern | `05-Exercise-singleton-pattern.md` | offen |
+| 4 | Factory Pattern | `04-Exercise-factory-pattern.md` | ✅ PR #5, #6 → `sprint-4`, #7 → `main` |
+| 5 | Singleton Pattern | `05-Exercise-singleton-pattern.md` | ✅ PR #8 |
 
 Die Aufträge liegen in [`new-bank/docs/exercises/`](new-bank/docs/exercises/).
 
@@ -43,11 +43,13 @@ Bank_Auftrag/
 ├── README.md                    dieses Dokument
 ├── docs/
 │   ├── Klassendiagramm.md
+│   ├── Sprints.md               Sprint-Dokumentation
 │   └── use-cases/UC-*.md        Use-Case-Beschreibungen
 └── new-bank/                    Maven-Projekt (Java 21, Spring Boot)
     ├── src/main/java/ch/bbw/
-    │   ├── Bank.java            verwaltet alle Konten
+    │   ├── Bank.java            verwaltet alle Konten (Singleton)
     │   ├── AccountFactory.java  erstellt Konten und vergibt Kontonummern
+    │   ├── AccountType.java     Kontotyp + Präfix (S, Y, P)
     │   ├── Booking.java         eine Buchung (date, amount, text)
     │   ├── Scheduled.java       Transaktionsdatum
     │   ├── accounts/            Account (abstrakt) und die Kontotypen
@@ -61,8 +63,9 @@ Jede Klasse hat genau eine Aufgabe:
 
 | Klasse | Verantwortung |
 |---|---|
-| `Bank` | verwaltet die Konten (nach Kontonummer) und leitet Ein-/Auszahlungen weiter; kennt nur den abstrakten Typ `Account` |
-| `AccountFactory` | erstellt Konten des richtigen Typs und vergibt die Kontonummern |
+| `Bank` | verwaltet die Konten (nach Kontonummer) und leitet Ein-/Auszahlungen weiter; kennt nur den abstrakten Typ `Account`. Singleton über `getInstance()`; die `AccountFactory` wird per Konstruktor übergeben |
+| `AccountFactory` | erstellt Konten des richtigen Typs und vergibt die Kontonummern (thread-safe mit `AtomicLong`) |
+| `AccountType` | Enum der Kontotypen mit ihrem Präfix (`S`, `Y`, `P`) |
 | `Account` (abstrakt) | hält die Buchungen, prüft Betrag und Datum, berechnet den Saldo und erstellt den Kontoauszug |
 | `SavingsAccount`, `SalaryAccount`, `PromoYouthSavingsAccount` | ergänzen nur ihre eigene Abhebungsregel |
 | `Booking` | eine unveränderliche Buchung (Datum, Betrag, Text) |
