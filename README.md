@@ -12,21 +12,29 @@ und committet, danach der Code, der sie grün macht.
 
 | Person | Schwerpunkt |
 |---|---|
-| Ledion Sakaj (Ledion124) | Sprint 2 (Buchungen), `BankTests`, README |
-| Louiss123 | Sprint 3 (`SalaryAccount`), Sprint 4 (Factory), Klassendiagramm |
-| Silvanca | Sprint 3 (`PromoYouthSavingsAccount`), Sprint 5 (Singleton), Use Cases |
+| Ledion Sakaj (Ledion124) | Sprint 2 (Buchungen), Tests für Sprint 1 (`BankTests`) und Sprint 4 (`AccountFactoryTests`), README, JavaDoc |
+| Louis Engel (Louiss123) | Sprint 3 (`SalaryAccount`), Sprint 4 (Factory), Klassendiagramm |
+| Silvan Castelberg (Silvanca) | Sprint 3 (`PromoYouthSavingsAccount`, `getAccountType`), Sprint 5 (Singleton), Use Cases |
 
 ## Sprint-Übersicht
 
 | Sprint | Thema | Auftrag | Stand |
 |---|---|---|---|
-| 1 | Baseline: `Bank` + `Account` (einzahlen, abheben, Saldo) | – | ✅ |
-| 2 | Buchungen mit Text, Saldo aus Buchungen, Kontoauszug | `02-Exercise-bookings.md` | ✅ |
-| 3 | Kontotypen / Vererbung | `03-Exercise-specific-accounts.md` | in Arbeit |
-| 4 | Factory Pattern | `04-Exercise-factory-pattern.md` | offen |
+| 1 | Baseline: `Bank` + `Account` (einzahlen, abheben, Saldo) | Vorlage | ✅ Code aus der Vorlage, Tests von uns |
+| 2 | Buchungen mit Text, Saldo aus Buchungen, Kontoauszug | `02-Exercise-bookings.md` | ✅ PR #1 |
+| 3 | Kontotypen / Vererbung | `03-Exercise-specific-accounts.md` | ✅ PR #2, #3, #4 |
+| 4 | Factory Pattern | `04-Exercise-factory-pattern.md` | in Arbeit (Tests geschrieben) |
 | 5 | Singleton Pattern | `05-Exercise-singleton-pattern.md` | offen |
 
 Die Aufträge liegen in [`new-bank/docs/exercises/`](new-bank/docs/exercises/).
+
+## Arbeitsweise
+
+- **TDD:** Pro Feature zuerst ein `test(sprintN): …`-Commit (rote Tests), danach `feat(sprintN): …`.
+- **Branches:** Jede Person arbeitet auf einem eigenen Branch (`dev-…`). Fertige Arbeit kommt per
+  Pull Request in den Sprint-Branch (`sprint-2`, `sprint-3`, …) und von dort per Pull Request in `main`.
+  Jeder Pull Request wird von einer anderen Person reviewt.
+- **Commit-Nachrichten:** `typ(sprintN): beschreibung`, z. B. `feat(sprint2): add text to booking`.
 
 ## Aufbau
 
@@ -46,6 +54,24 @@ Bank_Auftrag/
     │   └── exceptions/          InvalidAmountException, InvalidDateException
     └── src/test/java/           JUnit-5-Tests
 ```
+
+## Architektur
+
+Jede Klasse hat genau eine Aufgabe:
+
+| Klasse | Verantwortung |
+|---|---|
+| `Bank` | verwaltet die Konten (nach Kontonummer) und leitet Ein-/Auszahlungen weiter; kennt nur den abstrakten Typ `Account` |
+| `AccountFactory` | erstellt Konten des richtigen Typs und vergibt die Kontonummern |
+| `Account` (abstrakt) | hält die Buchungen, prüft Betrag und Datum, berechnet den Saldo und erstellt den Kontoauszug |
+| `SavingsAccount`, `SalaryAccount`, `PromoYouthSavingsAccount` | ergänzen nur ihre eigene Abhebungsregel |
+| `Booking` | eine unveränderliche Buchung (Datum, Betrag, Text) |
+| `Scheduled` | ein Transaktionsdatum relativ zu jetzt |
+
+Vererbung: `Account` → `SavingsAccount` → `PromoYouthSavingsAccount`, und `Account` → `SalaryAccount`.
+`Account` definiert die abstrakte Methode `getAccountType()`, die jeder Kontotyp beantwortet.
+Die Kontotypen überschreiben `withdraw(date, amount, text)`, damit ihre Regel auch für
+Abhebungen mit Buchungstext gilt.
 
 ## Starten und testen
 
@@ -69,12 +95,17 @@ statt `./mvnw`):
   Ist der Text leer, wird `"Buchung"` verwendet.
 - **Validierung:** Beträge müssen grösser als 0 sein, und das Datum darf nicht in der
   Vergangenheit liegen. Abgelehnte Buchungen verändern das Konto nicht.
-- **Kontotypen:** `SavingsAccount` (Sparkonto, darf nicht überzogen werden),
-  `SalaryAccount` (Lohnkonto, darf bis zu einer Kreditlimite überzogen werden) und
-  `PromoYouthSavingsAccount` (Jugendsparkonto mit eigener Regel).
-  Kontonummern haben ein Präfix je Typ: `S-`, `P-`, `Y-`.
+- **Kontotypen:**
+  - `SavingsAccount` (Sparkonto): darf nicht überzogen werden.
+  - `SalaryAccount` (Lohnkonto): darf bis zur Kreditlimite überzogen werden (negative Zahl oder 0;
+    eine positive Limite wird abgelehnt).
+  - `PromoYouthSavingsAccount` (Promo-Jugendsparkonto): ein Sparkonto, auf dem immer mindestens
+    10 CHF bleiben müssen (Mindestsaldo).
+
+  Kontonummern haben ein Präfix je Typ: `S-` (Sparkonto), `P-` (Lohnkonto), `Y-` (Jugendsparkonto).
 
 ## Weitere Dokumentation
 
 - Use Cases: [`docs/use-cases/`](docs/use-cases/)
 - Klassendiagramm: [`docs/Klassendiagramm.md`](docs/Klassendiagramm.md)
+- Ursprüngliches README der Vorlage (Lehrer): [`new-bank/README-Vorlage.md`](new-bank/README-Vorlage.md)

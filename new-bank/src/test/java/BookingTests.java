@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Tests für die Klasse Booking.
  *
- * @author Luigi Cavuoti
- * @version 1.1
+ * @author Luigi Cavuoti, Ledion Sakaj
+ * @version 2.0
  */
 public class BookingTests {
 	/**

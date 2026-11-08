@@ -12,10 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Konto.
+ * Konto: gemeinsame Basis aller Kontotypen.
  *
- * @author Luigi Cavuoti, lro@gmx.ch
- * @version 2.1
+ * <p>
+ * Ein Konto hat eine Kontonummer und eine Liste von Buchungen. Es nimmt Ein- und
+ * Auszahlungen an, prüft Betrag (&gt; 0) und Datum (nicht in der Vergangenheit) und
+ * speichert jede Transaktion als {@link Booking}. Der Saldo wird nicht separat
+ * gespeichert, sondern immer aus der Summe der Buchungen berechnet (eine einzige
+ * Quelle der Wahrheit). Die Unterklassen ergänzen nur ihre eigene Abhebungsregel.
+ * </p>
+ *
+ * @author Luigi Cavuoti, lro@gmx.ch, Ledion Sakaj
+ * @version 3.0
  */
 public abstract class Account {
     /**
@@ -54,9 +62,9 @@ public abstract class Account {
     public abstract String getAccountType();
 
     /**
-     * Gibt das Saldo zur�ck.
+     * Gibt den Saldo zurück. Er wird aus der Summe aller Buchungsbeträge berechnet.
      *
-     * @return Saldo
+     * @return der Saldo in Millirappen; 0 bei einem Konto ohne Buchungen
      */
     public long getBalance() {
         return bookings.stream()
@@ -74,10 +82,10 @@ public abstract class Account {
     }
 
     /**
-     * Checks if the transaction date is not in the past.
+     * Checks if the transaction date is invalid, i.e. in the past.
      *
      * @param date the transaction date
-     * @return whether the transaction date is valid
+     * @return true if the date is in the past (invalid), false if it is now or in the future
      */
     public boolean isInvalidTransaction(Scheduled date) {
         return date.isPastDue();
@@ -89,6 +97,8 @@ public abstract class Account {
      * @param date   the transaction date
      * @param amount the amount to deposit
      * @return the new balance of the account
+     * @throws InvalidAmountException if the amount is not greater than 0
+     * @throws InvalidDateException   if the date is in the past
      */
     public long deposit(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
         return deposit(date, amount, "Einzahlung");
@@ -99,8 +109,10 @@ public abstract class Account {
      *
      * @param date   the transaction date
      * @param amount the amount to deposit
-     * @param text   the booking text
+     * @param text   the booking text; null or blank becomes "Buchung"
      * @return the new balance of the account
+     * @throws InvalidAmountException if the amount is not greater than 0 (no booking is added)
+     * @throws InvalidDateException   if the date is in the past (no booking is added)
      */
     public long deposit(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException {
         if (amount <= 0)
@@ -120,6 +132,8 @@ public abstract class Account {
      * @param date   the transaction date
      * @param amount the amount to withdraw
      * @return the new balance of the account
+     * @throws InvalidAmountException if the amount is not greater than 0 or the account type's rule forbids it
+     * @throws InvalidDateException   if the date is in the past
      */
     public long withdraw(Scheduled date, long amount) throws InvalidAmountException, InvalidDateException {
         return withdraw(date, amount, "Auszahlung");
@@ -130,8 +144,10 @@ public abstract class Account {
      *
      * @param date   das Transaktionsdatum
      * @param amount der abzuhebende Betrag
-     * @param text   der Buchungstext
+     * @param text   der Buchungstext; null oder leer wird zu "Buchung"
      * @return der neue Saldo des Kontos
+     * @throws InvalidAmountException falls der Betrag nicht grösser als 0 ist (es wird nichts gebucht)
+     * @throws InvalidDateException   falls das Datum in der Vergangenheit liegt (es wird nichts gebucht)
      */
     public long withdraw(Scheduled date, long amount, String text) throws InvalidAmountException, InvalidDateException {
         if (amount <= 0)
