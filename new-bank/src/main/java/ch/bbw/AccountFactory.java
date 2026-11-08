@@ -21,7 +21,7 @@ public class AccountFactory {
     public Account createSalaryAccount(long creditLimit) {
         String id = "P-" + nextAccountId++;
 
-        return new SavingsAccount(id);
+        return new SalaryAccount(id, creditLimit);
     }
 
     public Account createSavingsAccount(){
