@@ -111,4 +111,72 @@ public class AccountFactoryTests {
 
         assertEquals(3000, ids.size());
     }
+
+    /**
+     * create(SAVINGS) liefert ein Sparkonto mit Präfix "S-".
+     */
+    @Test
+    @DisplayName("create(SAVINGS) returns a SavingsAccount with prefix S-")
+    public void testCreateWithTypeSavings() {
+        Account account = factory.create(AccountType.SAVINGS);
+
+        assertInstanceOf(SavingsAccount.class, account);
+        assertTrue(account.getId().startsWith("S-"));
+    }
+
+    /**
+     * create(PROMO_YOUTH) liefert ein Jugendsparkonto mit Präfix "Y-".
+     */
+    @Test
+    @DisplayName("create(PROMO_YOUTH) returns a PromoYouthSavingsAccount with prefix Y-")
+    public void testCreateWithTypePromoYouth() {
+        Account account = factory.create(AccountType.PROMO_YOUTH);
+
+        assertInstanceOf(PromoYouthSavingsAccount.class, account);
+        assertTrue(account.getId().startsWith("Y-"));
+    }
+
+    /**
+     * create(SALARY, limit) liefert ein Lohnkonto mit Präfix "P-" und der
+     * gegebenen Kreditlimite.
+     */
+    @Test
+    @DisplayName("create(SALARY, -50000) returns a SalaryAccount with that credit limit")
+    public void testCreateWithTypeSalary() {
+        Account account = factory.create(AccountType.SALARY, -50_000);
+
+        SalaryAccount salary = assertInstanceOf(SalaryAccount.class, account);
+        assertTrue(salary.getId().startsWith("P-"));
+        assertEquals(-50_000, salary.getCreditLimit());
+    }
+
+    /**
+     * create(SALARY) ohne Limite liefert ein Lohnkonto mit Kreditlimite 0.
+     */
+    @Test
+    @DisplayName("create(SALARY) without a limit returns a SalaryAccount with credit limit 0")
+    public void testCreateWithTypeSalaryWithoutLimit() {
+        Account account = factory.create(AccountType.SALARY);
+
+        SalaryAccount salary = assertInstanceOf(SalaryAccount.class, account);
+        assertEquals(0, salary.getCreditLimit());
+    }
+
+    /**
+     * create(SALARY, positive Limite) wird abgelehnt.
+     */
+    @Test
+    @DisplayName("create(SALARY, +50000) is rejected")
+    public void testCreateWithTypeSalaryPositiveLimitIsRejected() {
+        assertThrows(IllegalArgumentException.class, () -> factory.create(AccountType.SALARY, 50_000));
+    }
+
+    /**
+     * Ohne Kontotyp kann kein Konto erstellt werden.
+     */
+    @Test
+    @DisplayName("create(null) is rejected")
+    public void testCreateWithoutTypeIsRejected() {
+        assertThrows(IllegalArgumentException.class, () -> factory.create(null));
+    }
 }
