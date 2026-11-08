@@ -5,8 +5,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -178,5 +182,46 @@ public class AccountFactoryTests {
     @DisplayName("create(null) is rejected")
     public void testCreateWithoutTypeIsRejected() {
         assertThrows(IllegalArgumentException.class, () -> factory.create(null));
+    }
+
+    /**
+     * Auch wenn mehrere Threads gleichzeitig Konten erstellen, bekommt jedes
+     * Konto eine eigene Id. Spätestens mit Spring (Exercise 01) werden
+     * HTTP-Anfragen parallel verarbeitet.
+     *
+     * @throws InterruptedException wenn das Warten auf die Threads unterbrochen wird
+     */
+    @Test
+    @DisplayName("Ids are unique when accounts are created by many threads at once")
+    public void testIdsAreUniqueAcrossThreads() throws InterruptedException {
+        int threadCount = 8;
+        int accountsPerThread = 10_000;
+        Set<String> ids = ConcurrentHashMap.newKeySet();
+        CountDownLatch start = new CountDownLatch(1);
+        List<Thread> threads = new ArrayList<>();
+
+        for (int t = 0; t < threadCount; t++) {
+            Thread thread = new Thread(() -> {
+                try {
+                    start.await();
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
+                for (int i = 0; i < accountsPerThread; i++) {
+                    ids.add(factory.createSavingsAccount().getId());
+                }
+            });
+            threads.add(thread);
+            thread.start();
+        }
+
+        // alle Threads gleichzeitig loslaufen lassen
+        start.countDown();
+        for (Thread thread : threads) {
+            thread.join();
+        }
+
+        assertEquals(threadCount * accountsPerThread, ids.size());
     }
 }
