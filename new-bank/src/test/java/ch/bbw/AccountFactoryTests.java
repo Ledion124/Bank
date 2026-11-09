@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Kreditlimite erreicht das Lohnkonto.
  * </p>
  *
- * @author Ledion Sakaj
+ * @author Ledion Sakaj, Louis Engel
  * @version 1.0
  */
 public class AccountFactoryTests {

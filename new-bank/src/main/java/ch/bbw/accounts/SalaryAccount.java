@@ -28,7 +28,7 @@ import ch.bbw.exceptions.InvalidDateException;
  * sowie das Buchen übernimmt {@link Account}; hier steht nur die Limite.
  * </p>
  *
- * @author Louis Engel
+ * @author Louis Engel, Silvan Castelberg
  * @version 1.0
  */
 public class SalaryAccount extends Account

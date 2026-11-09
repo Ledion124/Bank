@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Beträge in Millirappen: 100_000 = CHF 1.00.
  * </p>
  *
- * @author Luigi Cavuoti
+ * @author Luigi Cavuoti, Louis Engel, Silvan Castelberg
  * @version 1.2
  */
 public class SalaryAccountTests

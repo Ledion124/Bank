@@ -20,7 +20,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * {@code docs/exercises/10-Exercise-build-the-be.md}).
  * </p>
  *
- * @author Luigi Cavuoti
+ * @author Luigi Cavuoti, Ledion Sakaj
  * @version 1.0
  */
 @SpringBootApplication
