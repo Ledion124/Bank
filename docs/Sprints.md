@@ -1,7 +1,7 @@
 # Sprint-Dokumentation
 
 Pro Sprint: was gemacht wurde, wer es gemacht hat und über welchen Pull Request es in
-`main` gekommen ist. Die Aufträge liegen in [`new-bank/docs/exercises/`](../new-bank/docs/exercises/).
+`main` gekommen ist. Die Aufträge liegen in [`docs/exercises/`](exercises/).
 
 Ablauf in jedem Sprint: Arbeit auf dem eigenen Branch (`dev-…`) → Pull Request in den
 Sprint-Branch (`sprint-N`) → Pull Request von `sprint-N` in `main`. Zu jeder Änderung werden

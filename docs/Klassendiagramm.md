@@ -1,7 +1,7 @@
 # Klassendiagramm
 
 Stand: Sprint 5 (Singleton Pattern). Das Diagramm zeigt alle Java-Klassen aus
-`new-bank/src/main/java/ch/bbw` mit Attributen, Methoden, Vererbung und Beziehungen.
+`src/main/java/ch/bbw` mit Attributen, Methoden, Vererbung und Beziehungen.
 
 Legende: `+` public, `-` private, `~` paketintern, `*` abstrakt, `$` statisch.
 Beträge sind in Millirappen (`long`), Datumswerte in Millisekunden (Unix-Zeit).

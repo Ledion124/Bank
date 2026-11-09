@@ -26,7 +26,7 @@ und committet, danach der Code, der sie grün macht.
 | 4 | Factory Pattern | `04-Exercise-factory-pattern.md` | ✅ PR #5, #6 → `sprint-4`, #7 → `main` |
 | 5 | Singleton Pattern | `05-Exercise-singleton-pattern.md` | ✅ PR #8 |
 
-Die Aufträge liegen in [`new-bank/docs/exercises/`](new-bank/docs/exercises/).
+Die Aufträge liegen in [`docs/exercises/`](docs/exercises/).
 
 ## Arbeitsweise
 
@@ -41,20 +41,24 @@ Die Aufträge liegen in [`new-bank/docs/exercises/`](new-bank/docs/exercises/).
 ```
 Bank_Auftrag/
 ├── README.md                    dieses Dokument
+├── README-Vorlage.md            ursprüngliches README der Vorlage (Lehrer)
+├── TODO.md                      Fortschritts-Checkliste
+├── pom.xml, mvnw, mvnw.cmd      Maven-Projekt (Java 21, Spring Boot)
 ├── docs/
 │   ├── Klassendiagramm.md
 │   ├── Sprints.md               Sprint-Dokumentation
-│   └── use-cases/UC-*.md        Use-Case-Beschreibungen
-└── new-bank/                    Maven-Projekt (Java 21, Spring Boot)
-    ├── src/main/java/ch/bbw/
-    │   ├── Bank.java            verwaltet alle Konten (Singleton)
-    │   ├── AccountFactory.java  erstellt Konten und vergibt Kontonummern
-    │   ├── AccountType.java     Kontotyp + Präfix (S, Y, P)
-    │   ├── Booking.java         eine Buchung (date, amount, text)
-    │   ├── Scheduled.java       Transaktionsdatum
-    │   ├── accounts/            Account (abstrakt) und die Kontotypen
-    │   └── exceptions/          InvalidAmountException, InvalidDateException
-    └── src/test/java/           JUnit-5-Tests
+│   ├── use-cases/UC-*.md        Use-Case-Beschreibungen
+│   ├── exercises/               Aufträge der Vorlage
+│   └── scenarios/               UML-Szenarien der Vorlage (PDF)
+├── src/main/java/ch/bbw/
+│   ├── Bank.java                verwaltet alle Konten (Singleton)
+│   ├── AccountFactory.java      erstellt Konten und vergibt Kontonummern
+│   ├── AccountType.java         Kontotyp + Präfix (S, Y, P)
+│   ├── Booking.java             eine Buchung (date, amount, text)
+│   ├── Scheduled.java           Transaktionsdatum
+│   ├── accounts/                Account (abstrakt) und die Kontotypen
+│   └── exceptions/              InvalidAmountException, InvalidDateException
+└── src/test/java/               JUnit-5-Tests
 ```
 
 ## Architektur
@@ -79,7 +83,7 @@ Abhebungen mit Buchungstext gilt.
 ## Starten und testen
 
 Voraussetzung: **JDK 21**. Maven muss nicht installiert sein, das Projekt bringt den
-Maven-Wrapper mit. Alle Befehle im Ordner `new-bank` ausführen (unter Windows `mvnw.cmd`
+Maven-Wrapper mit. Alle Befehle im Root des Repos ausführen (unter Windows `mvnw.cmd`
 statt `./mvnw`):
 
 ```bash
@@ -112,4 +116,4 @@ statt `./mvnw`):
 - Use Cases: [`docs/use-cases/`](docs/use-cases/)
 - Klassendiagramm: [`docs/Klassendiagramm.md`](docs/Klassendiagramm.md)
 - Sprint-Dokumentation (was, wer, welcher PR): [`docs/Sprints.md`](docs/Sprints.md)
-- Ursprüngliches README der Vorlage (Lehrer): [`new-bank/README-Vorlage.md`](new-bank/README-Vorlage.md)
+- Ursprüngliches README der Vorlage (Lehrer): [`README-Vorlage.md`](README-Vorlage.md)
