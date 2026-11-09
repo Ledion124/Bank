@@ -160,12 +160,12 @@ where that formatting belongs (hint: not inside `Booking`).
 
 ## Acceptance criteria
 
-- [ ] `Booking` is a record with `date`, `amount` and `text`, and no redundant hand-written accessors.
-- [ ] `Account` has no `balance` field; `getBalance()` is computed from the bookings.
-- [ ] `getBookings()` returns a read-only view of the history.
-- [ ] Booking date semantics are consistent between code and Javadoc.
-- [ ] A statement can be printed with readable amounts.
-- [ ] `./mvnw test` passes; the `BookingTests` and `AccountTests` stubs are implemented, not deleted.
+- [x] `Booking` is a record with `date`, `amount` and `text`, and no redundant hand-written accessors.
+- [x] `Account` has no `balance` field; `getBalance()` is computed from the bookings.
+- [x] `getBookings()` returns a read-only view of the history.
+- [x] Booking date semantics are consistent between code and Javadoc.
+- [x] A statement can be printed with readable amounts.
+- [x] `./mvnw test` passes; the `BookingTests` and `AccountTests` stubs are implemented, not deleted.
 
 ## Stretch goals (optional)
 
