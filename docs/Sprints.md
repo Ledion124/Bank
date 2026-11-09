@@ -14,8 +14,8 @@ zuerst die Tests committet (`test(sprintN): …`), danach der Code (`feat(sprint
 | 1 | Baseline: `Bank` und `Account` | Ledion Sakaj (Tests) | #1 | ✅ in `main` |
 | 2 | Buchungen mit Text, Saldo aus Buchungen, Kontoauszug | Ledion Sakaj | #1 | ✅ in `main` |
 | 3 | Kontotypen / Vererbung | Louis Engel, Silvan Castelberg | #2, #3 → `sprint-3`, #4 → `main` | ✅ in `main` |
-| 4 | Factory Pattern | Ledion Sakaj (Tests), Louis Engel | #5, #6 → `sprint-4` | in `sprint-4`, PR nach `main` offen |
-| 5 | Singleton Pattern | Silvan Castelberg | `sprint-5` → `main` | in Arbeit |
+| 4 | Factory Pattern | Ledion Sakaj (Tests), Louis Engel | #5, #6 → `sprint-4`, #7 → `main` | ✅ in `main` |
+| 5 | Singleton Pattern | Silvan Castelberg | #8 (`sprint-5` → `main`) | ✅ in `main` |
 
 ## Sprint 1 – Baseline
 
@@ -58,7 +58,7 @@ Auftrag: `04-Exercise-factory-pattern.md`
 - **Louis Engel:** Enum `AccountType` mit den Präfixen `S`, `Y`, `P`; `create(AccountType, long)`
   mit `switch`; die Factory erstellt jetzt die richtigen Kontotypen; thread-sicherer Zähler mit
   `AtomicLong`; Klassendiagramm neu gezeichnet. PR #6 (`dev-engel` → `sprint-4`).
-- **PR nach `main`:** offen.
+- **PR nach `main`:** #7 (`sprint-4` → `main`).
 
 ## Sprint 5 – Singleton Pattern
 
@@ -78,4 +78,4 @@ Auftrag: `05-Exercise-singleton-pattern.md`
     eigener Factory (`BankConstructorTests`).
   - Klassendiagramm auf Sprint 5 nachgeführt.
 - **Wer:** Silvan Castelberg.
-- **PR:** `sprint-5` → `main` (Nummer folgt).
+- **PR:** #8 (`sprint-5` → `main`).
