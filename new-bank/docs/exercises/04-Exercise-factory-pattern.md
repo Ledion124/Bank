@@ -160,13 +160,13 @@ only the abstract `ch.bbw.accounts.Account`.
 
 ## Acceptance criteria
 
-- [ ] `createPromoYouthSavingsAccount()` and `createSalaryAccount(long)` return their own subtypes.
-- [ ] `creditLimit` reaches the `SalaryAccount` and is verified by a test.
-- [ ] Account type and id prefix are defined in one place (`AccountType`), not as scattered string
+- [x] `createPromoYouthSavingsAccount()` and `createSalaryAccount(long)` return their own subtypes.
+- [x] `creditLimit` reaches the `SalaryAccount` and is verified by a test.
+- [x] Account type and id prefix are defined in one place (`AccountType`), not as scattered string
       literals.
-- [ ] Id generation is thread-safe, or its single-threaded assumption is documented.
-- [ ] `Bank` does not import or instantiate any concrete account class.
-- [ ] `./mvnw test` passes, including the new `AccountFactoryTests`.
+- [x] Id generation is thread-safe, or its single-threaded assumption is documented.
+- [x] `Bank` does not import or instantiate any concrete account class.
+- [x] `./mvnw test` passes, including the new `AccountFactoryTests`.
 
 ## Stretch goals (optional)
 

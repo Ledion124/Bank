@@ -164,14 +164,14 @@ This is the *composition root* idea, and it is exactly what Spring will do for y
 
 ## Acceptance criteria
 
-- [ ] `Bank` has a private constructor and a `getInstance()` returning one shared instance.
-- [ ] The chosen implementation is thread-safe, and the choice is justified in a comment.
-- [ ] All three implementation variants have been compared in writing.
-- [ ] Tests are isolated from each other again, and the mechanism used is explicitly labelled as a
+- [x] `Bank` has a private constructor and a `getInstance()` returning one shared instance.
+- [x] The chosen implementation is thread-safe, and the choice is justified in a comment.
+- [x] All three implementation variants have been compared in writing.
+- [x] Tests are isolated from each other again, and the mechanism used is explicitly labelled as a
       workaround.
-- [ ] `AccountFactory` is injected into `Bank`, not constructed inside it.
-- [ ] The class Javadoc records the arguments **for and against** the singleton here.
-- [ ] `./mvnw test` passes, and passes again when run twice in a row.
+- [x] `AccountFactory` is injected into `Bank`, not constructed inside it.
+- [x] The class Javadoc records the arguments **for and against** the singleton here.
+- [x] `./mvnw test` passes, and passes again when run twice in a row.
 
 ## Stretch goals (optional)
 

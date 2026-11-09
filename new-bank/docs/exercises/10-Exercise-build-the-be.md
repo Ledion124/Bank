@@ -110,7 +110,7 @@ origin for local development.
 - [ ] Domain exceptions are translated into JSON error responses with appropriate status codes, no
       raw 500s for expected error cases (invalid amount, invalid date, unknown account id).
 - [ ] CORS is configured for the local Vite origin.
-- [ ] `AccountFactory` bug (see above) is fixed or explicitly documented as a deliberate decision.
+- [x] `AccountFactory` bug (see above) is fixed or explicitly documented as a deliberate decision.
 - [ ] `./mvnw test` passes, including new controller-level tests.
 
 ## Stretch goals (optional)
