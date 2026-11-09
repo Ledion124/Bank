@@ -93,7 +93,7 @@ import java.util.TreeMap;
  * Sie gehört der Bank, und über die Bank gibt es sie ohnehin nur einmal.
  * </p>
  *
- * @author luigicavuoti, lro@gmx.ch, Silvan Castelberg
+ * @author luigicavuoti, lro@gmx.ch, Ledion Sakaj, Silvan Castelberg
  * @version 3.0
  */
 public class Bank {

@@ -22,7 +22,7 @@ import java.util.List;
  * Quelle der Wahrheit). Die Unterklassen ergänzen nur ihre eigene Abhebungsregel.
  * </p>
  *
- * @author Luigi Cavuoti, lro@gmx.ch, Ledion Sakaj
+ * @author Luigi Cavuoti, lro@gmx.ch, Ledion Sakaj, Silvan Castelberg
  * @version 3.0
  */
 public abstract class Account {

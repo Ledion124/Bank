@@ -6,7 +6,7 @@ import java.time.temporal.UnsupportedTemporalTypeException;
 
 /**
  * A class to represent a scheduled date.
- * @author lro@gmx.ch
+ * @author lro@gmx.ch, Ledion Sakaj
  * @version 1.0
  */
 public class Scheduled {

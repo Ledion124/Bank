@@ -14,7 +14,7 @@ import ch.bbw.exceptions.InvalidDateException;
  * {@link ch.bbw.exceptions.InvalidAmountException} abgelehnt.
  * </p>
  *
- * @author Luigi Cavuoti, lro@gmx.ch, Ledion Sakaj
+ * @author Luigi Cavuoti, lro@gmx.ch, Ledion Sakaj, Silvan Castelberg
  * @version 1.2
  */
 public class SavingsAccount extends Account
